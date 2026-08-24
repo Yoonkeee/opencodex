@@ -1,18 +1,13 @@
 import { expect, test } from "bun:test";
 
 /**
- * Claude account-pool card inset contract.
+ * Claude account-pool card inset contract. The rule comment on
+ * `.anthropic-pool-card__notice` in `src/styles.css` explains why each value is what it is.
  *
  * Source-text assertions, not rendered measurements: happy-dom performs no layout, so a
  * getBoundingClientRect() here returns zeros and would prove nothing. Rendered proof was
- * captured in a real browser during the fix — the title sat 17px from the card's left
- * edge while the warning box and the threshold input sat at 1px. This file's job is to
- * keep the CSS shape that produced that gap from coming back silently.
- *
- * The bug: `.card` carries no padding of its own, so each child supplies the 16px inset.
- * `.card-row`, `.card-sub` and `.setting-row` all do, which is why the title row, the help
- * line and the rotation rows were indented. The experimental warning box and the threshold
- * field are none of those three, so they ran flush against the card border.
+ * captured in a real browser during the fix — the title sat 17px from the card's left edge
+ * while the warning box and the threshold input sat at 1px.
  */
 
 const cssUrl = new URL("../src/styles.css", import.meta.url);
@@ -66,26 +61,18 @@ async function rowInset(): Promise<number> {
 test("the warning box is inset by the same amount as the card's padded rows", async () => {
   const css = withoutComments(await Bun.file(cssUrl).text());
   const notice = ruleBody(css, ".anthropic-pool-card__notice");
-
-  // Margin, not padding: the box draws a border, so padding alone insets the text and
-  // leaves the border itself sitting on the card edge — the original bug, one layer in.
   expect(horizontal(notice, "margin")).toBe(await rowInset());
 });
 
 test("the threshold field is inset by the same amount as the card's padded rows", async () => {
   const css = withoutComments(await Bun.file(cssUrl).text());
   const field = ruleBody(css, ".anthropic-pool-card__field");
-
-  // The `.input` inside is full-width, so the field carries the inset for the whole group;
-  // without it the input's own border reaches the card edge.
   expect(horizontal(field, "padding")).toBe(await rowInset());
 });
 
 test("the help line inside the threshold field is not indented twice", async () => {
   const css = withoutComments(await Bun.file(cssUrl).text());
 
-  // `.card-sub` brings its own 16px, which lands on top of the field's inset and pushes the
-  // help text out of line with the label directly above it.
   const group = css.match(
     /(^|\n)([^{}]*\.anthropic-pool-card__field \.card-sub\s*)\{([^}]*)\}/,
   );
