@@ -63,6 +63,7 @@ export type {
   OcxClientIntegrationsConfig,
   OcxConfig,
   OcxAccountPoolRotationStrategy,
+  OcxAccountPoolQuotaWindow,
   OcxComboStrategy,
   OcxComboDefaultEffort,
   OcxComboTarget,
