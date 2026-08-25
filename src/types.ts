@@ -64,6 +64,7 @@ export type {
   OcxConfigRebaseProvenance,
   OcxConfig,
   OcxAccountPoolRotationStrategy,
+  OcxAccountPoolQuotaWindow,
   OcxComboStrategy,
   OcxComboDefaultEffort,
   OcxComboTarget,
